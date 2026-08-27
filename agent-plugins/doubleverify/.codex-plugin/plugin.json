@@ -1,0 +1,27 @@
+{
+  "name": "doubleverify-agent-plugin",
+  "version": "0.1.13",
+  "description": "Analyze and report on DV Pinnacle media quality data across all channels: campaign health, brand suitability, fraud, viewability, and geo.",
+  "author": {
+    "name": "DoubleVerify"
+  },
+  "license": "Proprietary",
+  "skills": "./skills/",
+  "mcpServers": "./.codex-mcp.json",
+  "interface": {
+    "displayName": "DoubleVerify",
+    "shortDescription": "Analyze DV Pinnacle media quality data",
+    "longDescription": "Use DV Pinnacle data services from Codex to resolve programs, discover datamarts, run media quality queries, and summarize campaign health, brand suitability, fraud/SIVT, viewability, geo-compliance, and related reporting metrics.",
+    "developerName": "DoubleVerify",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ],
+    "defaultPrompt": [
+      "Show campaign health for my DV program",
+      "Which campaigns have elevated Fraud/SIVT Incident Rate?",
+      "Create a brand suitability summary"
+    ]
+  }
+}
