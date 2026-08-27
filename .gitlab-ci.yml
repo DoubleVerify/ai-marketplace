@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------------------
+# DV AI Agent Plugins Marketplace — GitLab CI Pipeline
+# ---------------------------------------------------------------------------
+# Any plugin placed under `agent-plugins/<plugin-id>/` in this repo will be
+# packaged and published by the `publish|context-hub|plugins` job that
+# auto-pipeline runs automatically when `DV_CI_ENABLE_PLUGINS_PUBLISH` is true.
+#
+# Each plugin must also be listed in `.claude-plugin/marketplace.json` (and
+# optionally `.cursor-plugin/marketplace.json`) at the repo root — that is
+# what end users see when they run `/plugin marketplace add <your-repo>.git`.
+#
+# Branch behavior (handled by auto-pipeline):
+#   - feature branches  -> publish a `-dev` version (safe to iterate)
+#   - main /            -> publish the production version
+#
+# Override any variable below by setting it in your project's GitLab CI/CD
+# settings (Settings > CI/CD > Variables) or by editing this file directly.
+# ---------------------------------------------------------------------------
+
+include:
+  - project: doubleverify/devops/ci-cd/gitlab-ci
+    file: common.yml
+    ref: $DV_CI_LIBGITLABCI_VER
+  - project: doubleverify/devops/ci-cd/gitlab/auto-pipeline
+    file: /auto-pipeline/main.yaml
+    ref: $AUTO_PIPELINE_STABLE
+
+variables:
+  DV_CI_ENABLE_PLUGINS_PUBLISH: "true"
+  GRAFANA_ANNOTATION: "false"
+
+  # OPTIONAL — turn on if your team ALSO wants to publish standalone skills
+  # (under a top-level `skills/` directory) from this repo. Most plugin repos
+  # bundle their skills INSIDE the plugin (under `agent-plugins/<id>/skills/`)
+  # and should leave this off.
+  # DV_CI_ENABLE_SKILLS_PUBLISH: "true"
+
+  # OPTIONAL — pin a specific skills-hub Docker image tag for the publish job.
+  # Leave unset to use the default (recommended). Override only when you need
+  # to test against an unreleased skills-hub change.
+  # SKILLS_HUB_IMAGE_TAG: "latest"
+
+  # OPTIONAL — directory that contains your plugin folders. Default is
+  # `agent-plugins`. Only change this if your repo layout requires a
+  # different location.
+  # PLUGINS_DIR: "agent-plugins"
+
+  # OPTIONAL — one-time migration flag. Set to "true" only if you are moving
+  # plugins from another GitLab project into this one. It transfers the
+  # `source_project_id` ownership in the skills-hub. Remove (or set to "false")
+  # after the first successful publish.
+  # PLUGINS_CHANGE_OWNERSHIP: "true"

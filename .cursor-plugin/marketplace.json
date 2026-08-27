@@ -1,0 +1,13 @@
+{
+  "name": "REPLACE-ME-marketplace",
+  "owner": {
+    "name": "REPLACE-ME Team Name",
+    "email": "your.team@doubleverify.com"
+  },
+  "metadata": {
+    "description": "REPLACE-ME — one-line description of what this marketplace publishes.",
+    "version": "1.0.0",
+    "pluginRoot": "agent-plugins"
+  },
+  "plugins": []
+}
