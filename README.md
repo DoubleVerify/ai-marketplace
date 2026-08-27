@@ -98,7 +98,7 @@ Lives at `agent-plugins/<plugin-id>/.claude-plugin/plugin.json`:
 
 Commit and push. The `publish|context-hub|plugins` job runs automatically:
 - Feature branches → `-dev` version
-- `main` → production version, registered in the DV skills-hub
+- `main` → production version, registered in the marketplace catalog
 
 **Claude Code** — users install via CLI:
 
@@ -107,13 +107,13 @@ Commit and push. The `publish|context-hub|plugins` job runs automatically:
 /plugin install <plugin-id>
 ```
 
-**Claude Desktop / Claude AI / Cursor** — users add your marketplace and install plugins through their UI. See the [DV Context Hub user guide](https://skills.doubleverify.ai) for details.
+**Claude Desktop / Claude AI / Cursor** — users add your marketplace and install plugins through their UI.
 
 ---
 
 ## Removing a plugin
 
-**Full removal:** delete `agent-plugins/<plugin-id>/` AND remove its entry from both `marketplace.json` files. Merge to `main` — the publish job deactivates it in the skills-hub.
+**Full removal:** delete `agent-plugins/<plugin-id>/` AND remove its entry from both `marketplace.json` files. Merge to `main` — the publish job deactivates it.
 
 **Soft-deprecation:** keep the directory, add `"metadata": { "archived": "true" }` to `plugin.json`, AND remove from `marketplace.json`. The pipeline enforces consistency — it fails if a plugin is listed in `marketplace.json` but its directory is missing, or if `archived: true` is set but the entry is still advertised.
 
@@ -125,5 +125,4 @@ The first GitLab project to publish a `plugin_id` owns it. To transfer ownership
 
 ## More
 
-- Full details: see [`CLAUDE.md`](CLAUDE.md) and comments in [`.gitlab-ci.yml`](.gitlab-ci.yml).
-- Browse existing DV plugins: <https://skills.doubleverify.ai>.
+- Full details: see [`AGENTS.md`](AGENTS.md) and comments in [`.gitlab-ci.yml`](.gitlab-ci.yml).
