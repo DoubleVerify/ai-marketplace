@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This repo publishes AI agent plugins (Claude Code, Claude AI Enterprise, Cursor) to the DV Context Hub. Every directory under `agent-plugins/` is a plugin — add the manifest, update `marketplace.json`, push, and CI handles publishing.
+This repo publishes AI agent plugins (Claude Code, Claude AI Enterprise, Cursor) to this marketplace. Every directory under `agent-plugins/` is a plugin — add the manifest, update `marketplace.json`, push, and CI handles publishing.
 
 ## Plugin structure
 
@@ -59,6 +59,6 @@ Bump `version` in both `plugin.json` and the marketplace entry on every change.
 ## CI/CD
 
 - Feature branches → `-dev` version published (safe to iterate)
-- `main` → production version, registered in the DV Context Hub
+- `main` → production version, registered in the marketplace catalog
 - Pipeline fails if a `marketplace.json` entry has no matching directory, or if a plugin is marked archived but still advertised
 - No local build or test step — push and check the pipeline
