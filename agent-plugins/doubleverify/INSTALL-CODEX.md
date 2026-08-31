@@ -18,8 +18,10 @@ DV MCP tools, query DV data, list DV programs, or run any smoke test.
 - You are authorized against the DV MCP gateway this ZIP variant is
   pinned to (the `dv-mcp` OAuth login uses your DV/PIAM identity).
 - You have unzipped the artifact. After extraction there is a single
-  plugin root directory named `doubleverify-agent-plugin/` containing
-  `.codex-plugin/plugin.json`, `.codex-mcp.json`, and `skills/`.
+  plugin root directory named `doubleverify/` containing
+  `.codex-plugin/plugin.json`, `.codex-mcp.json`, and `skills/`. Older
+  ZIP variants name that directory `doubleverify-agent-plugin/`; the
+  steps below are identical, only the directory name differs.
 
 ## Agent-Assisted Install
 
@@ -27,35 +29,34 @@ If you have a coding agent available (for example, in your editor), you
 can have it perform the install.
 
 If the artifact is already unzipped, ask the agent to read
-`./doubleverify-agent-plugin/INSTALL-CODEX.md` and install this plugin
-into Codex. Tell it to ask before writing outside the workspace or
-running commands that need approval. Tell it not to call DV MCP tools,
-query DV data, list DV programs, or run any smoke test.
+`./doubleverify/INSTALL-CODEX.md` and install this plugin into Codex.
+Tell it to ask before writing outside the workspace or running commands
+that need approval. Tell it not to call DV MCP tools, query DV data,
+list DV programs, or run any smoke test.
 
 If you attached or referenced the ZIP directly and have not unzipped it
 first, ask the agent to extract the attached ZIP into workspace scratch,
-read `doubleverify-agent-plugin/INSTALL-CODEX.md`, and install this
-plugin into Codex. Tell it to ask before writing outside the workspace
-or running commands that need approval. Tell it not to call DV MCP
-tools, query DV data, list DV programs, or run any smoke test.
+read `doubleverify/INSTALL-CODEX.md`, and install this plugin into
+Codex. Tell it to ask before writing outside the workspace or running
+commands that need approval. Tell it not to call DV MCP tools, query DV
+data, list DV programs, or run any smoke test.
 
 The agent must perform ONLY these install-time actions, in order:
 
 1. If working from a ZIP, extract it into workspace scratch.
-2. Resolve the extracted plugin root (the `doubleverify-agent-plugin/`
-   directory produced by unzipping the artifact).
+2. Resolve the extracted plugin root (the `doubleverify/` directory
+   produced by unzipping the artifact).
 3. Confirm `.codex-plugin/plugin.json`, `.codex-mcp.json`, and `skills/`
    exist under that root. If any is missing, stop and report it.
 4. If Codex plugin validation tooling is available, validate the
    extracted plugin before installing it. If validation tooling is not
    available, continue after the required file checks above.
-5. Copy/sync the extracted plugin root to
-   `~/plugins/doubleverify-agent-plugin`.
+5. Copy/sync the extracted plugin root to `~/plugins/doubleverify`.
 6. Create or update `~/.agents/plugins/marketplace.json` (see
    "Personal marketplace file" below).
 7. Preserve unrelated marketplace entries and unrelated JSON keys.
-8. Register `doubleverify-agent-plugin` in the personal marketplace.
-9. Run `codex plugin add doubleverify-agent-plugin@personal`.
+8. Register `doubleverify` in the personal marketplace.
+9. Run `codex plugin add doubleverify@personal`.
 10. Run, or ask the user to run, `codex mcp login dv-mcp`.
 11. Optionally run `codex plugin list` as the final lightweight
     verification that the plugin is installed and enabled.
@@ -75,10 +76,9 @@ the standard personal marketplace shape:
 - Top-level `name` is `personal`.
 - Top-level `interface.displayName` is `Personal`.
 - Top-level `plugins` is an array.
-- The `plugins` array contains one entry named
-  `doubleverify-agent-plugin`.
+- The `plugins` array contains one entry named `doubleverify`.
 - That entry's `source` is local and its `path` is
-  `./plugins/doubleverify-agent-plugin`.
+  `./plugins/doubleverify`.
 - That entry's `policy.installation` is `AVAILABLE`.
 - That entry's `policy.authentication` is `ON_INSTALL`.
 - That entry's `category` is `Productivity`.
@@ -92,8 +92,8 @@ When the file already EXISTS, merge using this procedure:
    only if missing.
 5. Ensure top-level `plugins` is an array.
 6. Remove any existing top-level plugin entry whose `name` is
-   `doubleverify-agent-plugin`.
-7. Append the `doubleverify-agent-plugin` entry shown above.
+   `doubleverify` (or the legacy `doubleverify-agent-plugin`).
+7. Append the `doubleverify` entry shown above.
 8. Write the formatted JSON back.
 
 If the file exists but is NOT valid JSON, STOP and ask the user before
@@ -105,20 +105,18 @@ implicitly.
 
 For the default personal marketplace at
 `~/.agents/plugins/marketplace.json`, Codex resolves
-`source.path = ./plugins/doubleverify-agent-plugin` to
-`~/plugins/doubleverify-agent-plugin`. Do not move the plugin under
-`~/.agents/plugins/plugins/` or `~/.codex/plugins/` for this flow.
+`source.path = ./plugins/doubleverify` to `~/plugins/doubleverify`. Do
+not move the plugin under `~/.agents/plugins/plugins/` or
+`~/.codex/plugins/` for this flow.
 
 ## Manual Install
 
 If you do not want agent assistance, run these steps yourself from the
-directory that contains the extracted `doubleverify-agent-plugin/`
-folder.
+directory that contains the extracted `doubleverify/` folder.
 
 1. Copy the extracted plugin into the local plugins directory. Create
-   `~/plugins/doubleverify-agent-plugin` if it does not exist, then
-   sync or copy the extracted `doubleverify-agent-plugin/` folder into
-   that destination.
+   `~/plugins/doubleverify` if it does not exist, then sync or copy the
+   extracted `doubleverify/` folder into that destination.
 
 2. Edit `~/.agents/plugins/marketplace.json`. If the file does not
    exist, create it using the personal marketplace shape above. If it
@@ -127,7 +125,7 @@ folder.
    the merge mechanically; do not treat the file as plain text.
 
 3. Add the plugin from the personal marketplace:
-   run `codex plugin add doubleverify-agent-plugin@personal`.
+   run `codex plugin add doubleverify@personal`.
 
 4. Log in to the MCP server:
    run `codex mcp login dv-mcp`.
@@ -170,12 +168,10 @@ thread so the newly registered plugin and `dv-mcp` server are loaded.
 
 - `codex: command not found`: the Codex CLI is not installed or not on
   your `PATH`. Install it and confirm with `codex --version`.
-- `codex plugin add doubleverify-agent-plugin@personal` cannot find the
-  plugin: confirm the plugin was copied to
-  `~/plugins/doubleverify-agent-plugin` and that
-  `~/.agents/plugins/marketplace.json` contains the
-  `doubleverify-agent-plugin` entry with
-  `source.path = ./plugins/doubleverify-agent-plugin`.
+- `codex plugin add doubleverify@personal` cannot find the plugin:
+  confirm the plugin was copied to `~/plugins/doubleverify` and that
+  `~/.agents/plugins/marketplace.json` contains the `doubleverify`
+  entry with `source.path = ./plugins/doubleverify`.
 - No `dv-mcp` tools after install: confirm `codex mcp login dv-mcp`
   completed, then restart Codex or start a new thread.
 - `marketplace.json` is not valid JSON: do not let any tool overwrite

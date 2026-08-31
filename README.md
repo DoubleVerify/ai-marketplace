@@ -1,7 +1,7 @@
 # DV AI Agent Plugins Marketplace — Project Template
 
 A GitLab project template for DV teams to publish AI agent plugins
-(Claude Code, Claude AI Enterprise, Cursor) to the DV plugin marketplace.
+(Claude Code, Claude AI Enterprise, Cursor, Codex) to the DV plugin marketplace.
 
 ---
 
@@ -14,10 +14,14 @@ your-repo/
 │   └── marketplace.json        # Claude Code / Claude AI catalog
 ├── .cursor-plugin/
 │   └── marketplace.json        # Cursor catalog (delete if not targeting Cursor)
+├── .agents/plugins/
+│   └── marketplace.json        # Codex catalog (delete if not targeting Codex)
 └── agent-plugins/
     └── <plugin-id>/
         ├── .claude-plugin/
         │   └── plugin.json     # plugin manifest
+        ├── .codex-plugin/
+        │   └── plugin.json     # optional — Codex-native manifest
         ├── .mcp.json           # optional — MCP server connections
         ├── skills/             # optional — bundled skills
         ├── agents/             # optional — sub-agent definitions
@@ -76,6 +80,29 @@ Claude and Cursor use different formats. Both files live at the **repo root**.
 }
 ```
 
+**`.agents/plugins/marketplace.json`** — Codex catalog. Local `path` resolves
+against the **repo root**, not against `.agents/plugins/`:
+
+```json
+{
+  "name": "my-team-marketplace",
+  "interface": { "displayName": "My Team" },
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": { "type": "local", "path": "./agent-plugins/my-plugin" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}
+```
+
+`policy.installation` is one of `AVAILABLE`, `INSTALLED_BY_DEFAULT`,
+`NOT_AVAILABLE`. `policy.authentication` is `ON_INSTALL` or `ON_USE`.
+Codex falls back to `.claude-plugin/marketplace.json` when this file is
+absent, but only the native catalog carries policy and category.
+
 ---
 
 ## plugin.json
@@ -109,11 +136,29 @@ Commit and push. The `publish|context-hub|plugins` job runs automatically:
 
 **Claude Desktop / Claude AI / Cursor** — users add your marketplace and install plugins through their UI.
 
+**Codex** — users install via CLI:
+
+```
+codex plugin marketplace add https://gitlab.com/<group>/<your-repo>.git --ref main
+codex plugin add <plugin-id>@<marketplace-name>
+```
+
+Then browse with `/plugins` inside Codex, and restart Codex (or start a new
+thread) so bundled skills and MCP tools load. If the plugin declares an MCP
+server, users also run `codex mcp login <server-name>`.
+
+Codex workspace admins can import a marketplace under **Admin > Plugins >
+Add > Import marketplace**, but that path **only supports GitHub
+repositories** — a GitHub mirror of this repo is required for
+admin-managed distribution. Import does not carry over `policy` values;
+admins set those per plugin. Plugins that declare MCP servers become
+Desktop-only after import.
+
 ---
 
 ## Removing a plugin
 
-**Full removal:** delete `agent-plugins/<plugin-id>/` AND remove its entry from both `marketplace.json` files. Merge to `main` — the publish job deactivates it.
+**Full removal:** delete `agent-plugins/<plugin-id>/` AND remove its entry from every `marketplace.json` file. Merge to `main` — the publish job deactivates it.
 
 **Soft-deprecation:** keep the directory, add `"metadata": { "archived": "true" }` to `plugin.json`, AND remove from `marketplace.json`. The pipeline enforces consistency — it fails if a plugin is listed in `marketplace.json` but its directory is missing, or if `archived: true` is set but the entry is still advertised.
 
