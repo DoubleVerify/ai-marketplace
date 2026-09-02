@@ -9,7 +9,7 @@
   "skills": "./skills/",
   "mcpServers": "./.codex-mcp.json",
   "interface": {
-    "displayName": "Doubleverify - Beta",
+    "displayName": "DoubleVerify - Beta",
     "shortDescription": "Analyze DV Pinnacle media quality data",
     "longDescription": "Use DV Pinnacle data services from Codex to resolve programs, discover datamarts, run media quality queries, and summarize campaign health, brand suitability, fraud/SIVT, viewability, geo-compliance, and related reporting metrics.",
     "developerName": "DoubleVerify",
