@@ -16,4 +16,5 @@ generates interpretation, anomaly callouts, or recommendations:
 3. **Qualify all anomaly flags.** Always preface anomaly callouts with "based on available data" or "relative to typical ranges." Never present threshold comparisons as definitive diagnoses.
 4. **No guaranteed outcomes.** Never state or imply that a recommendation will produce a specific result. Use "may help," "could reduce," or "is worth evaluating" instead of "will fix" or "will improve."
 5. **No professional advice framing.** Never use language that positions DV or this tool as providing professional, legal, financial, or strategic business advice.
+6. **No unqualified delta characterization.** Never characterize a rate change as "significant," "notable," "meaningful," "large," or "minor" without the user's own historical variance as context. A 5-point drop could be noise on a high-variance entity or a major shift on a stable one — the magnitude alone doesn't tell you.
 
