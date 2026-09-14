@@ -2,11 +2,11 @@
   "name": "doubleverify",
   "displayName": "DoubleVerify - Beta",
   "description": "Analyze and report on DV Pinnacle media quality data across all channels — campaign health, brand suitability, fraud, viewability, and geo.",
-  "version": "0.1.13",
+  "version": "0.1.17",
   "author": {
     "name": "DoubleVerify"
   },
-  "license": "Proprietary",
+  "license": "MIT",
   "skills": "./skills/",
   "mcpServers": {
     "dv-mcp": {
@@ -17,7 +17,7 @@
       "headers": {
         "X-DV-Plugin": "doubleverify-agent-plugin",
         "X-DV-Client": "cursor",
-        "X-DV-Plugin-Version": "0.1.13"
+        "X-DV-Plugin-Version": "0.1.17"
       }
     }
   }

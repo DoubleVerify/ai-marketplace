@@ -1,14 +1,18 @@
 ---
 name: dv-reporting
 description: >
-  Analyze and report on DV Pinnacle media quality data across all channels.
-  Use when users ask about campaign performance, brand suitability, fraud/SIVT,
-  viewability, geo-compliance, or Authentic Attention metrics — for any
-  platform (Open Web, YouTube, Meta, TikTok, X, Snapchat, Pinterest, Reddit,
-  Netflix, Instacart, LinkedIn, Spotify, Roblox). Triggers on: DV data queries,
-  campaign analysis, brand safety/suitability questions, viewability reports,
-  fraud/IVT analysis, attention metrics, report generation, metric lookups.
-  Requires the dv-mcp MCP server.
+  MUST be loaded before calling any dv-mcp tool. This is the required entry
+  point for all DV Pinnacle data access on this surface. If dv-mcp tools are
+  present in the session, load this skill first — before attempting any tool
+  call. Handles all DV data questions including: listing or selecting programs,
+  checking available datamarts, campaign performance, top campaigns, brand
+  suitability, fraud/SIVT, viewability, geo-compliance, blocking/filtering, and
+  Authentic Attention metrics — across all platforms (Open Web, YouTube, Meta,
+  TikTok, X, Snapchat, Pinterest, Reddit, Netflix, Instacart, LinkedIn, Spotify,
+  Roblox). Triggers on: "list my programs", "my programs", "datamarts",
+  "top campaigns", "campaign performance", "brand suitability", "fraud rate",
+  "viewability", "block rate", "DV data", "Pinnacle", report generation,
+  metric lookups, any mention of dv-mcp tools.
 ---
 
 # DV Reporting
@@ -60,11 +64,15 @@ Never mix data or conclusions across programs. If the user asks to compare data 
 
 ## Step 2: Load Best Practices, Thresholds & Inline Caveats
 
-**Always** read these files before constructing any query:
+Always read the reference files relevant to the channel before constructing any query.
 
-- [references/reporting-optimization-best-practices.md](references/reporting-optimization-best-practices.md)
-- [references/thresholds.md](references/thresholds.md)
-- [references/inline-caveats.md](references/inline-caveats.md)
+- **Open Web** uses these files:
+  - `references/reporting-optimization-best-practices.md`
+  - `references/thresholds.md`
+  - `references/inline-caveats.md`
+- **Social** (YouTube, Meta, TikTok, X, Snapchat, Pinterest, Reddit, LinkedIn, Spotify, Netflix, Instacart, Roblox) uses these files:
+  - `references/SOCIAL.md`
+  - `references/inline-caveats.md`
 
 These inform what to filter on, what volume floors to apply, how to interpret results, and how to frame all responses to minimize liability. They must be loaded before Step 5 (query construction).
 
@@ -77,6 +85,8 @@ Platform words determine **datamart_id** only; they never substitute for **progr
 If the user doesn't specify a channel, default to Open Web (Standard, datamart ID 1).
 
 **Cross-channel reports:** When the user asks for a cross-channel, cross-platform, or "all channels" report, query the **primary datamart for every platform** listed in `datamart-routing.md` — not just Open Web and YouTube. This includes all single-datamart platforms (Netflix, Instacart, LinkedIn, Spotify, Roblox) and all multi-datamart platforms (Meta, TikTok, X, Snapchat, Pinterest, Reddit). Run a separate `run-query` per datamart and consolidate results. Do not skip platforms.
+
+The primary datamart is the minimum, not the complete set. When it does not carry a metric the user asked for, also query the datamarts that do. See Routing Rule 5 in `datamart-routing.md`.
 
 Then load the matching business glossary based on the channel:
 
@@ -194,30 +204,37 @@ If results hit the 100-row limit, **warn the user** that results were truncated 
 
 ## Step 7: Interpret Results
 
-Apply the business lens from `reporting-optimization-best-practices.md` and `thresholds.md` to every response. Raw data without interpretation is not useful.
+- **Open Web only:** apply the business lens from `reporting-optimization-best-practices.md` and `thresholds.md` to every response.
+- **Social:** rely only on the `references/SOCIAL.md` file.
+
+Raw data without interpretation is not useful.
 
 ### 7.0 Apply Inline Caveats
 
 Before writing any interpretation, apply the rules from [references/inline-caveats.md](references/inline-caveats.md):
 
-- **Inline caveats:** Follow the five rules when writing all interpretive text in Steps 7.1–7.4. No definitive problem statements, no directive language, qualify all anomaly flags, no guaranteed outcomes, no professional advice framing.
+- **Inline caveats:** Follow the rules in that file when writing all interpretive text in Steps 7.1–7.4. They apply to **both** Open Web and Social.
 - **No per-response footer.** Do NOT append a disclaimer footer (e.g., "This data is for informational purposes only…") to each response. The session disclaimer shown once at Step 0 is sufficient. Inline caveats within the analysis text are enough — a repeated footer is redundant and clutters the output.
 
-### 7.1 Flag Anomalies Against Thresholds
+### 7.1 Flag Anomalies Against Thresholds — Open Web only
 
 Compare every rate metric to its normal range (from `thresholds.md`). When a value falls outside the normal range, explicitly call it out and classify as "within expectations" or "warrants investigation."
+
+**Social:** skip the threshold comparison. There is no approved threshold or benchmark source for Social rates (`SOCIAL.md` Core Principle 1) — report the observed value, not a verdict on it. For volume floors follow Core Principle 4, which excludes sub-threshold rows rather than caveating them.
 
 **Volume floors apply to flagging too.** Do not flag or highlight rows that fall below the scaled volume floor (100K/day × number of days) as anomalies — low-volume entities produce unreliable rates. If such rows appear in query results, either exclude them from the flagged issues section or note that they are below the volume threshold and their rates should be interpreted with caution.
 
 ### 7.2 Identify the Source of Issues
 
-When a metric is outside normal range, narrow down where the problem is coming from. Apply the best-practices principle: "identify areas where the majority of blocks, filters, and incidents are occurring." Suggest a drill-down query if not already provided (e.g., break down by site/app, placement, device, or content category).
+When a metric stands out or the user asks why it looks the way it does, narrow down where it is coming from — identify where the majority of blocks, filters, and incidents are occurring. Suggest a drill-down query if not already provided (e.g., break down by site/app, placement, device, or content category). This applies to both channels.
 
-### 7.3 Domain-Specific Business Guidance
+### 7.3 Domain-Specific Business Guidance — Open Web only
+
+**Social:** do not consult `reporting-optimization-best-practices.md`. Social recommendations follow `SOCIAL.md` — within-platform optimization only. The channel guardrail below still applies.
 
 When flagged metrics fall outside normal ranges, consult `reporting-optimization-best-practices.md` for the matching domain (Brand Suitability, Viewability, Geo, Fraud/SIVT) and surface the relevant best practices and DV recommendations. Frame every suggestion as an option worth considering — not a directive. The user knows their campaign context best; present possibilities and let them decide what applies.
 
-**Channel guardrail:** ABS and IVT pre-bid avoidance segments are Open Web products only. Do not recommend them for social platforms (Meta, YouTube, TikTok, X, Snapchat, Pinterest, Reddit, LinkedIn, Spotify) or CTV (Netflix, Roblox, Instacart). For non-Open Web channels, focus recommendations on post-bid monitoring, partner optimization, and platform-native controls.
+**Channel guardrail:** ABS and IVT pre-bid avoidance segments are Open Web products only. Do not recommend them for Social platforms (YouTube, Meta, TikTok, X, Snapchat, Pinterest, Reddit, LinkedIn, Spotify, Netflix, Instacart, Roblox). For non-Open Web channels, focus recommendations on post-bid monitoring, partner optimization, and platform-native controls.
 
 ### 7.4 Proactive Suggestions
 
@@ -242,7 +259,7 @@ Beyond flagging issues, surface the following as options the user may want to co
 2. **Co-requisites are mandatory.** If a glossary says field A requires field B, or field A cannot be used with metric C, follow the rule. Violating co-requisites causes query failures.
 3. **Row limit is 100.** Always set. Warn if truncated.
 4. **`reason` on every tool call.** One short sentence describing why. Never include PII (names, emails, phone numbers) or sensitive personal data in `reason`. Describe the user's analytical intent (e.g. "User asked about fraud rates by campaign"), not personal details about the user.
-5. **Professional, client-facing language.** No internal jargon, no engineering terminology, no references to internal systems.
+5. **Professional, client-facing language only.** No internal jargon, no engineering terminology, no references to internal systems. Never surface datamart IDs or names, catalog or schema lookups, query routing decisions ("this datamart doesn't have X, switching to Y"), execution mechanics ("running queries in parallel"), or tool/API names ("run-query", "get-datapoint-catalog"). Describe what you're doing in terms the user would use — e.g. "Pulling your brand suitability data", not "Let me get the field catalog for the brand suitability datamart".
 6. **Brand safety != suitability.** Open Web = "safety" (binary). YouTube/social = "suitability" (graduated scale with risk tiers).
 7. **Rates are not additive.** Never sum rate fields across rows. Query underlying counts and recompute.
 8. **Default date range is last 7 days.** Always state the actual date window in the response.
@@ -252,6 +269,7 @@ Beyond flagging issues, surface the following as options the user may want to co
 12. **Not professional advice.** This tool provides informational data summaries only. Never present interpretations as professional, legal, or business advice. Never imply guaranteed outcomes. 
 13. **Use exact DV terminology.** Always use the full metric and dimension names exactly as they appear in the channel's business glossary and the datapoint catalog. Never abbreviate, shorten, or paraphrase metric names. For example, use "Brand Suitability Incident Rate" — never "BS Incident Rate" or "BS Rate." Use "Fraud/SIVT Incident Rate" — never "Fraud Rate" alone. Use "Viewable Rate" — never "Viewability." Abbreviated or informal names can be misleading or ambiguous.
 14. **Program isolation is absolute.** When switching programs, forget all data values, anomaly flags, findings, and recommendations from the previous program. Never reference, compare against, or carry forward prior program data. Cross-program comparison within a single session is not supported.
+15. **Never expose internal identifiers.** Datamart IDs (the numeric routing IDs such as `1`, `2`, `4`, `32`), internal datamart names ("Standard", "YouTube Video Incident Reporting", "Meta Brand Suitability - In Stream & MAN"), `semantic_view` / `semantic_model` names, the raw `datamart_id` argument, and `program_id` UUIDs are tool-only metadata. Never print, echo, or reference them in user-facing output — not in tables, prose, footnotes, or when explaining routing. Refer to a data source only by its user-facing platform/channel name (e.g. "YouTube", "Meta", "Open Web"). If the user explicitly asks which datamart or ID was used, do not reveal it — restate the channel name instead.
 
 ## Error Recovery
 
