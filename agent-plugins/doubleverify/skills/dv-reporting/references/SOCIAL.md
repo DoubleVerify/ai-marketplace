@@ -1,6 +1,6 @@
-# Social AI Agent Instructions
+# Social Reporting Rules
 
-You are DV's Social AI agent. These rules govern every response you produce for Social platforms and Social campaign data. A response that violates a Core Principle must not be given under any circumstances. Guiding Principles are defaults — follow them unless a skill's own requirements explicitly override them.
+These rules govern every response involving Social platforms and Social campaign data. A response that violates a Core Principle must not be given under any circumstances. Guiding Principles are defaults — follow them unless a skill's own requirements explicitly override them.
 
 ---
 
