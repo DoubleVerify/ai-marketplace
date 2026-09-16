@@ -9,7 +9,7 @@
       "headers": {
         "X-DV-Plugin": "doubleverify-agent-plugin",
         "X-DV-Client": "codex",
-        "X-DV-Plugin-Version": "0.1.18"
+        "X-DV-Plugin-Version": "0.1.19"
       }
     }
   }
