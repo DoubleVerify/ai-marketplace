@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This repo publishes AI agent plugins (Claude Code, Claude AI Enterprise, Cursor, Codex) to this marketplace. Every directory under `agent-plugins/` is a plugin — add the manifest, update `marketplace.json`, push, and CI handles publishing.
+This repo publishes AI agent plugins (Claude Code, Claude AI Enterprise, Cursor) to this marketplace. Every directory under `agent-plugins/` is a plugin — add the manifest, update `marketplace.json`, push, and CI handles publishing.
 
 ## Plugin structure
 
@@ -11,10 +11,7 @@ agent-plugins/
     │   └── plugin.json     # required for Claude
     ├── .cursor-plugin/
     │   └── plugin.json     # required for Cursor
-    ├── .codex-plugin/
-    │   └── plugin.json     # required for Codex
     ├── .mcp.json           # optional — MCP server connections
-    ├── .codex-mcp.json     # optional — MCP server connections for Codex
     ├── skills/             # optional — bundled skills
     ├── agents/             # optional — sub-agent definitions
     ├── commands/           # optional — slash commands
@@ -23,7 +20,7 @@ agent-plugins/
 
 ### plugin.json
 
-Same format for `.claude-plugin/`, `.cursor-plugin/` and `.codex-plugin/`:
+Same format for `.claude-plugin/` and `.cursor-plugin/`:
 
 ```json
 {
@@ -38,13 +35,13 @@ Same format for `.claude-plugin/`, `.cursor-plugin/` and `.codex-plugin/`:
 - `name` must equal the plugin directory name, and must match the entry `name` in every `marketplace.json`
 - Component fields (`skills`, `agents`, `commands`, `hooks`) are string paths starting with `./`
 - `category` belongs in `marketplace.json`, not here
-- `.codex-plugin/plugin.json` additionally accepts `mcpServers` (a path to the Codex MCP config) and an `interface` object that drives how Codex presents the plugin at install time
 
-To remove a plugin, see `README.md` — it requires editing both `plugin.json` and `marketplace.json`.
+To remove a plugin, see [Removing a plugin](#removing-a-plugin) below. It requires
+editing both `plugin.json` and `marketplace.json`.
 
 ## marketplace.json
 
-Claude, Cursor and Codex use different formats. All three files live at the **repo root**.
+Claude and Cursor use different formats. Both files live at the **repo root**.
 
 **`.claude-plugin/marketplace.json`** — `source` is a relative path, no `pluginRoot`:
 
@@ -58,17 +55,30 @@ Claude, Cursor and Codex use different formats. All three files live at the **re
 { "name": "your-plugin-id", "source": "your-plugin-id", "description": "...", "version": "1.0.0", "category": "devops" }
 ```
 
-**`.agents/plugins/marketplace.json`** — Codex catalog. `source` is an object; `path` resolves against the **repo root**, not `.agents/plugins/`. No `version` field on the entry:
-
-```json
-{ "name": "your-plugin-id", "source": { "type": "local", "path": "./agent-plugins/your-plugin-id" }, "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" }, "category": "Productivity" }
-```
-
 Bump `version` in `plugin.json` and in the Claude/Cursor marketplace entries on every change.
+
+## Removing a plugin
+
+**Full removal:** delete `agent-plugins/<plugin-id>/` and remove its entry from
+every `marketplace.json` file. Merge to `main` and the publish job deactivates
+it.
+
+**Soft-deprecation:** keep the directory, add `"metadata": { "archived": "true" }`
+to `plugin.json`, and remove the entry from every `marketplace.json`.
+
+The pipeline enforces consistency either way. It fails if a plugin is listed in
+`marketplace.json` but its directory is missing, or if `archived: true` is set
+while the entry is still advertised.
+
+## Plugin ownership
+
+The first GitLab project to publish a `plugin_id` owns it. To transfer
+ownership, set `PLUGINS_CHANGE_OWNERSHIP: "true"` in `.gitlab-ci.yml` for one
+pipeline run, then remove it.
 
 ## CI/CD
 
 - Feature branches → `-dev` version published (safe to iterate)
 - `main` → production version, registered in the marketplace catalog
-- Pipeline fails if a `marketplace.json` entry has no matching directory, or if a plugin is marked archived but still advertised
+- Pipeline enforces `marketplace.json` consistency, see [Removing a plugin](#removing-a-plugin)
 - No local build or test step — push and check the pipeline
