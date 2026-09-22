@@ -19,7 +19,6 @@ which is env-pinned per artifact by the build script.
 | Client | File | Scope |
 |---|---|---|
 | Claude Code | `.mcp.json` in the project root, or `~/.claude.json` under `mcpServers` | project / global |
-| Codex | Not configured here; use INSTALL-CODEX.md and `codex mcp login dv-mcp` | plugin install/auth |
 
 ## Authentication flow
 

@@ -1,173 +1,126 @@
-# DV AI Agent Plugins Marketplace — Project Template
+# DoubleVerify AI Agent Plugins
 
-A GitLab project template for DV teams to publish AI agent plugins
-(Claude Code, Claude AI Enterprise, Cursor, Codex) to the DV plugin marketplace.
+The official DoubleVerify plugin marketplace for AI coding and chat agents:
+Claude Code, Claude Desktop and Cursor. Install a DV plugin and query
+your DV Pinnacle® media quality data in natural language, right inside your agent.
 
 ---
 
-## Repo layout
+## Quick start (Claude Code)
+
+> The `doubleverify` plugin is currently in **Beta**.
+
+**Prerequisites:** Claude Code installed and a DV account with access
+to at least one DV Pinnacle program. Data access follows your existing program
+permissions. No API keys or manual MCP configuration required.
+
+Run these commands one at a time **inside a Claude Code session**:
+
+```text
+/plugin marketplace add doubleverify/ai-marketplace
+/plugin install doubleverify@doubleverify
+```
+
+Complete the installation prompts. If Claude Code asks you to reload plugins,
+run `/reload-plugins` before continuing.
+
+Ask your agent:
+
+```text
+List my programs
+```
+
+Sign in with your DV account when prompted. Select a program from
+the results, then try:
+
+```text
+Show campaign health for this program over the last 30 days
+```
+
+If sign-in does not appear or the tools are unavailable, run `/mcp`, select
+the plugin's `dv-mcp` server and complete authentication. If the server is
+missing, check that `doubleverify` is enabled in `/plugin` and restart Claude Code.
+
+### Other agents
+
+Marketplace repository:
+[doubleverify/ai-marketplace](https://github.com/doubleverify/ai-marketplace)
+
+| Agent | How to add |
+|-------|-----------|
+| **Claude Desktop / claude.ai** | Settings > Plugins > Add marketplace, paste the repo URL, then install **doubleverify**. |
+| **Cursor** | Add the marketplace URL in the plugins UI, then install **doubleverify**. |
+
+---
+
+## Available plugins
+
+| Plugin | Description | Category |
+|--------|-------------|----------|
+| **doubleverify** | The single plugin for all DoubleVerify agentic capabilities, connecting you to DV campaign performance data, insights, recommendations and workflows. | data |
+
+### What `doubleverify` does
+
+Connects your agent to the DV MCP service and adds three skills:
+
+| Skill | What it does |
+|-------|--------------|
+| **dv-reporting** | Ask natural-language questions about your DV campaign data — performance, brand suitability, fraud, viewability, and more. |
+| **dv-program-context** | Identifies which DV account to pull from — ask about any program without configuring anything. |
+| **dv-feedback** | Send feedback about the plugin, the data, or a specific result straight to the DV team from the chat. |
+
+Reporting covers campaign performance, top campaigns, brand suitability,
+fraud/SIVT, viewability, geo-compliance, blocking/filtering and DV Authentic
+Attention® metrics on Open Web, YouTube, Meta, TikTok, X, Snapchat,
+Pinterest, Reddit, Netflix, Instacart, LinkedIn, Spotify and Roblox.
+
+It currently provides DV Pinnacle media-quality reporting and plugin feedback,
+and is built to grow. New DV products and capabilities will be added over time.
+
+**Reporting example:** ask *"How are my TikTok campaigns doing on brand
+suitability?"* and the plugin identifies your program, pulls TikTok data, and
+provides an analysis with flagged anomalies.
+
+Full plugin reference, covering every skill, the `dv-mcp` tools, setup and
+data handling:
+[`agent-plugins/doubleverify/README.md`](agent-plugins/doubleverify/README.md).
+
+---
+
+## Repository layout
 
 ```
-your-repo/
-├── .gitlab-ci.yml
-├── .claude-plugin/
-│   └── marketplace.json        # Claude Code / Claude AI catalog
-├── .cursor-plugin/
-│   └── marketplace.json        # Cursor catalog (delete if not targeting Cursor)
-├── .agents/plugins/
-│   └── marketplace.json        # Codex catalog (delete if not targeting Codex)
+.
+├── .claude-plugin/marketplace.json   # Claude Code / Claude catalog
+├── .cursor-plugin/marketplace.json   # Cursor catalog
 └── agent-plugins/
-    └── <plugin-id>/
-        ├── .claude-plugin/
-        │   └── plugin.json     # plugin manifest
-        ├── .codex-plugin/
-        │   └── plugin.json     # optional — Codex-native manifest
-        ├── .mcp.json           # optional — MCP server connections
-        ├── skills/             # optional — bundled skills
-        ├── agents/             # optional — sub-agent definitions
-        ├── commands/           # optional — slash commands
-        └── hooks/              # optional — lifecycle hooks
+    └── doubleverify/
+        ├── README.md                 # full plugin reference
+        ├── .claude-plugin/plugin.json
+        ├── .cursor-plugin/plugin.json    # inlines the dv-mcp config
+        ├── .mcp.json                     # Claude Code / generic MCP config
+        └── skills/
+            ├── dv-reporting/             # reporting skill + business-glossary references
+            ├── dv-program-context/       # program resolution + dv-mcp setup
+            └── dv-feedback/              # feedback capture
 ```
 
 ---
 
-## marketplace.json
+## Support
 
-Claude and Cursor use different formats. Both files live at the **repo root**.
-
-**`.claude-plugin/marketplace.json`** — `source` is a relative path, no `pluginRoot`:
-
-```json
-{
-  "name": "my-team-marketplace",
-  "owner": { "name": "My Team", "email": "my.team@doubleverify.com" },
-  "metadata": {
-    "description": "My team plugin marketplace.",
-    "version": "1.0.0"
-  },
-  "plugins": [
-    {
-      "name": "my-plugin",
-      "source": "./agent-plugins/my-plugin",
-      "description": "What this plugin does.",
-      "version": "1.0.0",
-      "category": "devops"
-    }
-  ]
-}
-```
-
-**`.cursor-plugin/marketplace.json`** — `pluginRoot` in `metadata`, `source` is a bare name:
-
-```json
-{
-  "name": "my-team-marketplace",
-  "owner": { "name": "My Team", "email": "my.team@doubleverify.com" },
-  "metadata": {
-    "description": "My team plugin marketplace.",
-    "version": "1.0.0",
-    "pluginRoot": "agent-plugins"
-  },
-  "plugins": [
-    {
-      "name": "my-plugin",
-      "source": "my-plugin",
-      "description": "What this plugin does.",
-      "version": "1.0.0",
-      "category": "devops"
-    }
-  ]
-}
-```
-
-**`.agents/plugins/marketplace.json`** — Codex catalog. Local `path` resolves
-against the **repo root**, not against `.agents/plugins/`:
-
-```json
-{
-  "name": "my-team-marketplace",
-  "interface": { "displayName": "My Team" },
-  "plugins": [
-    {
-      "name": "my-plugin",
-      "source": { "type": "local", "path": "./agent-plugins/my-plugin" },
-      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
-      "category": "Productivity"
-    }
-  ]
-}
-```
-
-`policy.installation` is one of `AVAILABLE`, `INSTALLED_BY_DEFAULT`,
-`NOT_AVAILABLE`. `policy.authentication` is `ON_INSTALL` or `ON_USE`.
-Codex falls back to `.claude-plugin/marketplace.json` when this file is
-absent, but only the native catalog carries policy and category.
+- Questions and issues: **AIMarketplacesupport@doubleverify.com**
+- Feedback from inside the agent: just say *"send feedback to DV"*.
 
 ---
 
-## plugin.json
+## Contributing
 
-Lives at `agent-plugins/<plugin-id>/.claude-plugin/plugin.json`:
-
-```json
-{
-  "name": "my-plugin",
-  "version": "1.0.0",
-  "description": "What this plugin does.",
-  "author": { "name": "My Team", "email": "my.team@doubleverify.com" },
-  "keywords": ["relevant", "tags"]
-}
-```
+Publishing or updating a plugin in this marketplace: see
+[`AGENTS.md`](AGENTS.md) and the comments in [`.gitlab-ci.yml`](.gitlab-ci.yml).
 
 ---
 
-## Publishing
+## License
 
-Commit and push. The `publish|context-hub|plugins` job runs automatically:
-- Feature branches → `-dev` version
-- `main` → production version, registered in the marketplace catalog
-
-**Claude Code** — users install via CLI:
-
-```
-/plugin marketplace add https://gitlab.com/<group>/<your-repo>.git
-/plugin install <plugin-id>
-```
-
-**Claude Desktop / Claude AI / Cursor** — users add your marketplace and install plugins through their UI.
-
-**Codex** — users install via CLI:
-
-```
-codex plugin marketplace add https://gitlab.com/<group>/<your-repo>.git --ref main
-codex plugin add <plugin-id>@<marketplace-name>
-```
-
-Then browse with `/plugins` inside Codex, and restart Codex (or start a new
-thread) so bundled skills and MCP tools load. If the plugin declares an MCP
-server, users also run `codex mcp login <server-name>`.
-
-Codex workspace admins can import a marketplace under **Admin > Plugins >
-Add > Import marketplace**, but that path **only supports GitHub
-repositories** — a GitHub mirror of this repo is required for
-admin-managed distribution. Import does not carry over `policy` values;
-admins set those per plugin. Plugins that declare MCP servers become
-Desktop-only after import.
-
----
-
-## Removing a plugin
-
-**Full removal:** delete `agent-plugins/<plugin-id>/` AND remove its entry from every `marketplace.json` file. Merge to `main` — the publish job deactivates it.
-
-**Soft-deprecation:** keep the directory, add `"metadata": { "archived": "true" }` to `plugin.json`, AND remove from `marketplace.json`. The pipeline enforces consistency — it fails if a plugin is listed in `marketplace.json` but its directory is missing, or if `archived: true` is set but the entry is still advertised.
-
----
-
-## Plugin ownership
-
-The first GitLab project to publish a `plugin_id` owns it. To transfer ownership, set `PLUGINS_CHANGE_OWNERSHIP: "true"` in `.gitlab-ci.yml` for one pipeline run.
-
-## More
-
-- Full details: see [`AGENTS.md`](AGENTS.md) and comments in [`.gitlab-ci.yml`](.gitlab-ci.yml).
+MIT. See [`LICENSE.txt`](LICENSE.txt).

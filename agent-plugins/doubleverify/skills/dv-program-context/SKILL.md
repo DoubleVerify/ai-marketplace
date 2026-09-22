@@ -48,7 +48,6 @@ path. Use these signals:
 |---|---|
 | `.claude-plugin/` directory loaded this skill | **Claude Code** |
 | `.cursor-plugin/` directory loaded this skill | **Cursor** |
-| `.codex-plugin/` directory loaded this skill | **Codex** |
 
 Only the **Claude Code** path below performs auto-configuration.
 All other clients must follow the manual recovery path.
@@ -82,9 +81,9 @@ automatically using the specification in
    Claude Code** so the new MCP server is loaded.
 5. After restart, confirm `list-my-programs` is now callable.
 
-### All other clients (Cursor / Codex) -- manual recovery only
+### All other clients (including Cursor) -- manual recovery only
 
-> **Do NOT run the auto-configure steps above in Cursor, Codex, or any
+> **Do NOT run the auto-configure steps above in Cursor or any
 > other non-Claude-Code client.**
 
 For Cursor, the `.cursor-plugin/plugin.json` manifest declares the MCP
@@ -92,15 +91,6 @@ server directly, so auto-configuration is not needed. If
 `list-my-programs` is missing, the plugin install or first OAuth
 handshake failed. Ask the user to reload the window or reinstall the
 plugin, then retry.
-
-For Codex, do not edit `.mcp.json` manually. Ensure the plugin is
-installed and enabled, run `codex mcp login dv-mcp`, then restart Codex
-or start a new Codex thread. If installing from the zip, follow the
-bundled `INSTALL-CODEX.md` instructions first. During login, Codex may
-report that the provider rejected the initially discovered scopes and
-then retry without scopes; this retry can be successful and should not
-be treated as a plugin install failure if the command ultimately
-completes.
 
 ### Hard stop
 
