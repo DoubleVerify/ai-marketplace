@@ -1,127 +1,95 @@
-# DoubleVerify Agent Plugin
+# DoubleVerify
 
-> The `doubleverify` plugin is currently in **Beta**.
+[Beta] The single plugin for all DoubleVerify agentic capabilities, connecting you to DV campaign performance data, insights, recommendations and workflows.
 
-Reference for what this plugin contains and how it behaves. For what it does
-and how to install it, see the [repository README](../../README.md).
+DoubleVerify's agent plugin for AI coding/chat clients — Claude Code, Claude Desktop / claude.ai, and Cursor. It connects an agent to DV's backend services via the `dv-mcp` MCP server and gives it a set of **skills**, each teaching the agent how to carry out one category of DV task safely and correctly.
 
----
+- **Plugin name:** `doubleverify`
+- **License:** MIT
+- **Backing service:** [`dv-mcp`](https://mcp.doubleverify.com/mcp), DV's hosted MCP gateway
+
+## What this plugin is
+
+The DoubleVerify plugin — one plugin for all DV capabilities in your AI workflow. It currently provides Pinnacle media-quality reporting and plugin feedback, and is built to grow — new DV products and capabilities will be added over time.
+
+**Reporting example:** Ask *"How are my TikTok campaigns doing on brand suitability?"* — the plugin identifies your program, pulls TikTok data, and provides an analysis with flagged anomalies.
+
+## Install
+
+### Claude Code
+
+```text
+/plugin marketplace add doubleverify/ai-marketplace
+/plugin install doubleverify@doubleverify
+```
+
+Complete the installation prompts. If Claude Code asks you to reload plugins, run `/reload-plugins` before continuing.
+
+### Claude Desktop / claude.ai
+
+Settings > Plugins > Add marketplace, paste the marketplace repository URL ([doubleverify/ai-marketplace](https://github.com/doubleverify/ai-marketplace)), then install **doubleverify**.
+
+### Cursor
+
+Add the marketplace URL in the plugins UI, then install **doubleverify**.
+
+## Skills
+
+Skills are loaded by the host agent based on their `description` frontmatter, and are designed to compose — one skill can delegate to another rather than every skill re-implementing shared behavior (program resolution, the legal disclaimer, etc.).
+
+Currently included:
+
+| Skill | Purpose |
+|---|---|
+| [`dv-reporting`](skills/dv-reporting/README.md) | Entry point for DV Pinnacle data questions. Routes a question to the right datamart, applies DV's business rules and thresholds, runs the query, and interprets the results. |
+| [`dv-program-context`](skills/dv-program-context/README.md) | Resolves which DV program (account) the current chat should operate against, and — on Claude Code — can self-configure the `dv-mcp` connection if it isn't already registered. Any skill that needs a `program_id` delegates here. |
+| [`dv-feedback`](skills/dv-feedback/README.md) | Records user-volunteered feedback about the plugin, the data, or a tool's behavior into DV's analytics logs. |
+
+More skills — covering other DV products or actions — are expected to land here over time.
 
 ## Requirements
 
 - An MCP-capable AI client: Claude Code, Claude Desktop / claude.ai, or Cursor
-- A DV account with access to at least one DV program
+- A DoubleVerify account with access to at least one DV program
 - Network access to `https://mcp.doubleverify.com/mcp`
 
 ## Setup
 
-The plugin bundles a client-specific MCP manifest so the `dv-mcp` server is
-easy to register regardless of host:
+The plugin bundles a client-specific MCP manifest so the `dv-mcp` server is easy to register regardless of host:
 
 | Client | Manifest | Notes |
 |---|---|---|
-| Claude Code | `.mcp.json` | `dv-program-context` can write this into the project's `.mcp.json` or the user's `~/.claude.json` automatically if it is missing. |
+| Claude Code | `.mcp.json` | `dv-program-context` can write this into the project's `.mcp.json` or the user's `~/.claude.json` automatically if it's missing — see that skill's README. |
 | Cursor | `.cursor-plugin/plugin.json` | Declares the MCP server directly; no manual `.mcp.json` editing needed. |
 
-Authentication is OAuth 2.1 / PKCE against DV's authentication gateway
-(RFC 9728 protected-resource discovery). The client drives a one-time
-"Connect" flow in its own UI; tokens are stored and refreshed automatically.
-There is no API key to manage by hand.
+Authentication is OAuth 2.1 / PKCE against DV's authentication gateway (RFC 9728 protected-resource discovery). The client drives a one-time "Connect" flow in its own UI; tokens are stored and refreshed automatically. There is no API key to manage by hand.
 
-Once connected, confirm setup by checking that `list-my-programs` appears in
-the client's tool list. If it does not, reload or restart the client rather
-than retrying the tool call.
+Once connected, confirm setup by checking that `list-my-programs` appears in the client's tool list. If it does not, reload or restart the client rather than retrying the tool call.
 
----
+## Data & privacy notes
 
-## Skills
+These conventions apply across all skills and are expected to extend to future ones:
 
-Skills are loaded by the host agent based on their `description` frontmatter,
-and are designed to compose. One skill can delegate to another rather than
-every skill re-implementing shared behavior such as program resolution or the
-legal disclaimer.
+- Every DV skill shows a single, session-scoped legal disclaimer before any other output, covering AI-generated-content risk, third-party LLM use, and DV's data-handling terms. It's shown once per session regardless of which skill the session enters through.
+- All tool calls take an optional `reason` argument DV uses for internal analytics — it should never contain PII and never affects tool behavior.
+- Data access is scoped to the requesting user's own DV permissions. `dv-reporting` today is read-only; that is a property of the current skill set, not a hard constraint of the plugin.
+- User-submitted content that flows through a skill (e.g. `dv-feedback`) is redacted for PII before being sent anywhere.
 
-| Skill | Role in the plugin |
-|---|---|
-| [`dv-reporting`](skills/dv-reporting/README.md) | Required entry point for any DV data question. Routes to a datamart, applies business rules, runs the query and interprets results |
-| [`dv-program-context`](skills/dv-program-context/README.md) | Resolves `program_id`, which every data tool call depends on. Can self-configure `dv-mcp` on Claude Code |
-| [`dv-feedback`](skills/dv-feedback/README.md) | Records user feedback through `submit-feedback` |
+## Support
 
----
+- Questions and issues: **AIMarketplacesupport@doubleverify.com**
+- Feedback from inside the agent: just say *"send feedback to DV"*.
 
-## The `dv-mcp` server
+## Repository layout
 
-The MCP server that connects the plugin to DV's backend services. It is the
-single source of live data for every skill, so `dv-reporting`,
-`dv-program-context` and `dv-feedback` all call it rather than talking to DV
-systems directly.
-
-- **Endpoint:** `https://mcp.doubleverify.com/mcp`
-- **Protocol:** MCP over HTTP
-- **Auth:** OAuth 2.1 / PKCE, described under [Setup](#setup)
-
-| Tool | Purpose | Called by |
-|---|---|---|
-| `list-my-programs` | Lists the DV programs the current user can access, with `id`, `name` and `timezone` for each | `dv-reporting`, `dv-program-context` |
-| `get-datapoint-catalog` | Returns the metrics and dimensions a given `datamart_id` supports, grouped by tag. The only valid source of field names for a query | `dv-reporting` |
-| `run-query` | Runs a query against a datamart using field display names rather than internal semantic IDs, and returns display-name column headers | `dv-reporting` |
-| `submit-feedback` | Records verbatim user feedback into DV's analytics logs | `dv-feedback` |
-
-More tools are expected as the plugin grows into other DV products.
-
-### `get-datapoint-catalog`
-
-Requires `datamart_id`. Returns a compact catalog grouped by tag:
-
-```text
-[Key Quality Indicators] M: Authentic Rate, Fraud Rate | D: Campaign Name
 ```
-
-`M:` marks metrics and `D:` marks dimensions. Callers are expected to call this
-before `run-query` rather than guessing field names. Anything not in the
-catalog is unavailable, not substitutable.
-
-### `run-query`
-
-Requires `program_id`, `datamart_id`, `semantic_model`, `semantic_view`,
-`fields` and `date_range`. Optional: `filters`, `sorts`, `limit` (default 500)
-and `time_zones`.
-
-Filter syntax is easy to get backwards:
-
-- Equality: `{"Campaign Name": "My Campaign"}`
-- Exclude: prefix the value with a dash, `{"Delivery Site": "-NULL,-N/A"}`
-- OR: comma-separate values with no dash, `{"Media Property": "RTB 123,RTB 456"}`
-- NULL match: `{"Delivery Site": "NULL"}`
-- Numeric comparisons go in the **value**, not the key: `{"UC Incidents": ">0"}`, never `{">UC Incidents": "0"}`
-
-`date_range` is a string in `"YYYY/MM/DD HH:mm:ss to YYYY/MM/DD HH:mm:ss"`
-format. Sorting does not exclude NULLs, so pair a sort on a numeric field with
-a `">0"` filter when nulls and zeros should not appear.
-
-### `submit-feedback`
-
-Requires `feedback`, 1 to 2000 characters, passed verbatim and never
-paraphrased. Optional: `category` (`bug`, `feature_request`, `data_quality`,
-`praise`, `other`) and `sentiment` (`positive`, `negative`, `neutral`), both
-omitted when the caller is not confident. The tool sanitizes input before
-logging and returns `logged_text` plus a `redacted` flag; when `redacted` is
-true, the caller shows `logged_text` so the user sees what was recorded.
-
-### Conventions across every tool
-
-- **`reason`.** Every tool takes an optional `reason` string for DV's internal analytics. It describes analytical intent in one short sentence, never contains personal data and never changes tool behavior.
-- **No fabrication.** Program IDs, datamart IDs and field names must come from a tool call in the current chat, never invented or carried over from memory.
-- **Scoped access.** Every call is scoped to the requesting user's own DV permissions. There is no elevated or service-level access path through this server.
-
----
-
-## Data and privacy
-
-- Every DV skill shows a single, session-scoped legal disclaimer before any other output, covering AI-generated-content risk, third-party LLM use and DV's data-handling terms. It appears once per session regardless of which skill the session enters through.
-- All tool calls take an optional `reason` argument DV uses for internal analytics. It never contains personal data and never affects tool behavior.
-- Data access is scoped to the requesting user's own DV permissions. `dv-reporting` is read-only today; that is a property of the current skill set rather than a hard constraint of the plugin.
-- User-submitted content that flows through a skill, such as `dv-feedback`, is redacted for personal data before being sent anywhere.
-
----
-
+.
+├── .claude-plugin/plugin.json    # Claude Code plugin manifest
+├── .cursor-plugin/plugin.json    # Cursor plugin manifest (inlines dv-mcp config)
+├── .mcp.json                     # Claude Code / generic MCP server config
+└── skills/
+    ├── dv-reporting/             # Pinnacle reporting skill + business-glossary references
+    ├── dv-program-context/       # Program resolution + dv-mcp setup
+    └── dv-feedback/              # Feedback capture
+    # future skills land here as sibling directories
+```
