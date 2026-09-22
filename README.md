@@ -57,7 +57,7 @@ Marketplace repository:
 
 | Plugin | Description | Category |
 |--------|-------------|----------|
-| **doubleverify** | The single plugin for all DoubleVerify agentic capabilities, connecting you to DV campaign performance data, insights, recommendations and workflows. | data |
+| **doubleverify** | [Beta] The single plugin for all DoubleVerify agentic capabilities, connecting you to DV campaign performance data, insights, recommendations and workflows. | data |
 
 ### What `doubleverify` does
 

@@ -1,7 +1,7 @@
 {
   "name": "doubleverify",
-  "displayName": "DoubleVerify - Beta",
-  "description": "The single plugin for all DoubleVerify agentic capabilities, connecting you to DV campaign performance data, insights, recommendations and workflows.",
+  "displayName": "DoubleVerify",
+  "description": "[Beta] The single plugin for all DoubleVerify agentic capabilities, connecting you to DV campaign performance data, insights, recommendations and workflows.",
   "version": "0.1.19",
   "author": {
     "name": "DoubleVerify"
