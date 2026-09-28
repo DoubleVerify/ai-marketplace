@@ -12,7 +12,7 @@ something a user invokes directly.
 It keeps three layers separate on purpose:
 
 | Layer | Meaning | Source |
-|---|---|---|
+| --- | --- | --- |
 | **Program** | Access container, supplying `program_id` and `timezone` | `list-my-programs` |
 | **Platform / channel** | Measurement domain such as YouTube or Meta, supplying `datamart_id` | `datamart-routing.md`, used by `dv-reporting` |
 | **Campaign** | Ad entity inside a program | Query results |

@@ -26,6 +26,4 @@ guarantee of an individual response.
 
 Tools used: `submit-feedback`.
 
----
-
 See the [plugin reference](../../README.md) for setup, the `dv-mcp` tool reference and data handling.
