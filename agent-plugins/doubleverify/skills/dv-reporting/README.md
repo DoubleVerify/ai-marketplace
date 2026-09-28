@@ -30,7 +30,7 @@ Guardrails:
 Reference files under [`references/`](references/):
 
 | File | Purpose |
-|---|---|
+| --- | --- |
 | `datamart-routing.md` | Maps user intent to a `datamart_id` |
 | `business-glossary-*.md` | Per-platform metric and dimension definitions and co-requisite rules (Open Web, YouTube, Meta, TikTok, X, Snapchat, Pinterest, Reddit, Netflix, Instacart, LinkedIn, Spotify, Roblox, GroupM, PMX) |
 | `thresholds.md` | Normal ranges and investigation triggers, Open Web only |

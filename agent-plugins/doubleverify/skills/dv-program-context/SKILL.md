@@ -81,7 +81,7 @@ automatically using the specification in
    Claude Code** so the new MCP server is loaded.
 5. After restart, confirm `list-my-programs` is now callable.
 
-### All other clients (including Cursor) -- manual recovery only
+### All other clients (Cursor) -- manual recovery only
 
 > **Do NOT run the auto-configure steps above in Cursor or any
 > other non-Claude-Code client.**
