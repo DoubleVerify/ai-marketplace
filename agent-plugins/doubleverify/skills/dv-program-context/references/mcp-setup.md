@@ -1,15 +1,15 @@
 # DV MCP Server Configuration
 
-The `dv-mcp` MCP server connects the agent to DV Pinnacle data services.
+The DV MCP server connects the agent to DV Pinnacle data services.
 It must be registered in the user's MCP configuration before any DV data
 tool (`list-my-programs`, `run-query`, `get-datapoint-catalog`, etc.)
 can be called.
 
 ## Configuration
 
-The canonical `dv-mcp` entry for this artifact lives in the plugin's
+The canonical DV MCP server entry for this artifact lives in the plugin's
 bundled `.mcp.json` at the plugin root. **Read that file and use its
-`mcpServers["dv-mcp"]` block verbatim** when writing the target MCP
+`mcpServers["dv"]` block verbatim** when writing the target MCP
 config. Do not synthesize keys or values from memory or from this
 document — every field's authoritative content is in the bundled file,
 which is env-pinned per artifact by the build script.

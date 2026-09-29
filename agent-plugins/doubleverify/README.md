@@ -2,11 +2,11 @@
 
 [Beta] The single plugin for all DoubleVerify agentic capabilities, connecting you to DV campaign performance data, insights, recommendations and workflows.
 
-DoubleVerify's agent plugin for AI coding/chat clients — Claude Code, Claude Desktop / claude.ai, and Cursor. It connects an agent to DV's backend services via the `dv-mcp` MCP server and gives it a set of **skills**, each teaching the agent how to carry out one category of DV task safely and correctly.
+DoubleVerify's agent plugin for AI coding/chat clients — Claude Code, Claude Desktop / claude.ai, and Cursor. It connects an agent to DV's backend services via the DV MCP server and gives it a set of **skills**, each teaching the agent how to carry out one category of DV task safely and correctly.
 
 - **Plugin name:** `doubleverify`
 - **License:** MIT
-- **Backing service:** [`dv-mcp`](https://mcp.doubleverify.com/mcp), DV's hosted MCP gateway
+- **Backing service:** [DV MCP](https://mcp.doubleverify.com/mcp), DV's hosted MCP gateway
 
 ## What this plugin is
 
@@ -42,7 +42,7 @@ Currently included:
 | Skill | Purpose |
 |---|---|
 | [`dv-reporting`](skills/dv-reporting/README.md) | Entry point for DV Pinnacle data questions. Routes a question to the right datamart, applies DV's business rules and thresholds, runs the query, and interprets the results. |
-| [`dv-program-context`](skills/dv-program-context/README.md) | Resolves which DV program (account) the current chat should operate against, and — on Claude Code — can self-configure the `dv-mcp` connection if it isn't already registered. Any skill that needs a `program_id` delegates here. |
+| [`dv-program-context`](skills/dv-program-context/README.md) | Resolves which DV program (account) the current chat should operate against, and — on Claude Code — can self-configure the DV MCP connection if it isn't already registered. Any skill that needs a `program_id` delegates here. |
 | [`dv-feedback`](skills/dv-feedback/README.md) | Records user-volunteered feedback about the plugin, the data, or a tool's behavior into DV's analytics logs. |
 
 More skills — covering other DV products or actions — are expected to land here over time.
@@ -55,7 +55,7 @@ More skills — covering other DV products or actions — are expected to land h
 
 ## Setup
 
-The plugin bundles a client-specific MCP manifest so the `dv-mcp` server is easy to register regardless of host:
+The plugin bundles a client-specific MCP manifest so the DV MCP server is easy to register regardless of host:
 
 | Client | Manifest | Notes |
 |---|---|---|
@@ -85,11 +85,11 @@ These conventions apply across all skills and are expected to extend to future o
 ```
 .
 ├── .claude-plugin/plugin.json    # Claude Code plugin manifest
-├── .cursor-plugin/plugin.json    # Cursor plugin manifest (inlines dv-mcp config)
+├── .cursor-plugin/plugin.json    # Cursor plugin manifest (inlines DV MCP config)
 ├── .mcp.json                     # Claude Code / generic MCP server config
 └── skills/
     ├── dv-reporting/             # Pinnacle reporting skill + business-glossary references
-    ├── dv-program-context/       # Program resolution + dv-mcp setup
+    ├── dv-program-context/       # Program resolution + DV MCP setup
     └── dv-feedback/              # Feedback capture
     # future skills land here as sibling directories
 ```

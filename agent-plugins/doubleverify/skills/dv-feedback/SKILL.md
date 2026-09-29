@@ -11,7 +11,7 @@ description: >
 
 # DV Feedback
 
-The `dv-mcp` MCP server exposes a `submit-feedback` tool that writes
+The DV MCP server exposes a `submit-feedback` tool that writes
 user-volunteered feedback into DV's analytics logs. This skill governs
 when and how to call it.
 
@@ -32,8 +32,8 @@ If the disclaimer was already shown this session by **any** DV skill, skip this 
 
 ## Prerequisites
 
-`submit-feedback` is provided by `dv-mcp`. If the server is not reachable
-(any `dv-mcp` tool call fails), do not invent a recording mechanism. Tell
+`submit-feedback` is provided by DV MCP. If the server is not reachable
+(any DV MCP tool call fails), do not invent a recording mechanism. Tell
 the user the DV MCP server is not reachable and stop. Do not retry.
 
 ## When to call `submit-feedback`

@@ -37,7 +37,7 @@ If the disclaimer was already shown this session by **any** DV skill, skip this 
 ## Prerequisites
 
 Before applying the rules below, confirm `list-my-programs` is callable.
-If it isn't, the `dv-mcp` MCP server isn't registered with this client.
+If it isn't, the DV MCP server isn't registered with this client.
 
 ### Detect the client environment
 
@@ -52,13 +52,13 @@ path. Use these signals:
 Only the **Claude Code** path below performs auto-configuration.
 All other clients must follow the manual recovery path.
 
-### Claude Code only — auto-configure dv-mcp
+### Claude Code only — auto-configure the DV MCP server
 
 > **Skip this section entirely if the client is not Claude Code.**
 
 If `list-my-programs` is not available, create the MCP configuration
 automatically using the specification in
-[references/dv-mcp-setup.md](references/dv-mcp-setup.md):
+[references/mcp-setup.md](references/mcp-setup.md):
 
 1. Read the plugin's bundled `.mcp.json` file (located at the plugin
    root) to obtain the server entry (`type`, `url`, `oauth.clientId`).
@@ -67,21 +67,21 @@ automatically using the specification in
    - **Project-scope:** `.mcp.json` in the user's project root
      (current working directory). Per-workspace; lives with the repo.
    - **User-scope:** `~/.claude.json`. Global to the user; all
-     workspaces see `dv-mcp`.
-3. Apply the entry under `mcpServers["dv-mcp"]` in the chosen file:
-   - If a `dv-mcp` entry is already present with the same `url` and
+     workspaces see the DV MCP server.
+3. Apply the entry under `mcpServers["dv"]` in the chosen file:
+   - If that entry is already present with the same `url` and
      `oauth.clientId`, skip to step 5.
    - If the file exists, merge the entry into the existing
      `mcpServers` object — **preserve every other entry under
      `mcpServers`** (e.g. `mcpServers["github"]`,
      `mcpServers["sentry"]`, …) and every other top-level field.
    - If the file does not exist (project-scope case), create it
-     containing only `mcpServers["dv-mcp"]`.
+     containing only `mcpServers["dv"]`.
 4. Tell the user which file was written and ask them to **restart
    Claude Code** so the new MCP server is loaded.
 5. After restart, confirm `list-my-programs` is now callable.
 
-### All other clients (Cursor) -- manual recovery only
+### All other clients -- manual recovery only
 
 > **Do NOT run the auto-configure steps above in Cursor or any
 > other non-Claude-Code client.**
@@ -94,7 +94,7 @@ plugin, then retry.
 
 ### Hard stop
 
-Do not attempt to answer the user's data question without `dv-mcp`
+Do not attempt to answer the user's data question without DV MCP
 available; fabricating a `program_id` or substituting another tool is
 not acceptable.
 
@@ -118,4 +118,4 @@ not acceptable.
 
 6. **Store program `timezone`.** `list-my-programs` returns `timezone` per program. Keep it in session context alongside `program_id` and `name`. `dv-reporting` uses it as the default query timezone for datamarts that allow timezone conversion.
 
-7. **Always set `reason` on every tool call.** Every `dv-mcp` tool accepts an optional `reason: str` argument. Set it to one short sentence describing why you are calling the tool (e.g., "Resolving program for user's fraud-rate question"). Never include PII (names, emails, phone numbers) or sensitive personal data in `reason` — describe the analytical intent, not personal details about the user. DV uses it for analytics and reasoning capture; it is not forwarded to upstream services and does not affect tool behavior. Omitting `reason` is allowed but discouraged.
+7. **Always set `reason` on every tool call.** Every DV MCP tool accepts an optional `reason: str` argument. Set it to one short sentence describing why you are calling the tool (e.g., "Resolving program for user's fraud-rate question"). Never include PII (names, emails, phone numbers) or sensitive personal data in `reason` — describe the analytical intent, not personal details about the user. DV uses it for analytics and reasoning capture; it is not forwarded to upstream services and does not affect tool behavior. Omitting `reason` is allowed but discouraged.

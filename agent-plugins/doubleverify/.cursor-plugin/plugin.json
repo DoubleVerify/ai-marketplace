@@ -2,14 +2,14 @@
   "name": "doubleverify",
   "displayName": "DoubleVerify",
   "description": "[Beta] The single plugin for all DoubleVerify agentic capabilities, connecting you to DV campaign performance data, insights, recommendations and workflows.",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "author": {
     "name": "DoubleVerify"
   },
   "license": "MIT",
   "skills": "./skills/",
   "mcpServers": {
-    "dv-mcp": {
+    "dv": {
       "url": "https://mcp.doubleverify.com/mcp",
       "auth": {
         "CLIENT_ID": "dv-agent-mcp"
@@ -17,7 +17,7 @@
       "headers": {
         "X-DV-Plugin": "doubleverify-agent-plugin",
         "X-DV-Client": "cursor",
-        "X-DV-Plugin-Version": "0.1.21"
+        "X-DV-Plugin-Version": "0.1.22"
       }
     }
   }

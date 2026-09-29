@@ -4,8 +4,8 @@ Identifies which DV account to pull from — ask about any program without
 configuring anything.
 
 It resolves which DV **program**, the account that scopes a user's data, the
-current chat should operate against, and keeps the `dv-mcp` connection working.
-Any skill that calls a `dv-mcp` tool requiring a `program_id` delegates here
+current chat should operate against, and keeps the DV MCP connection working.
+Any skill that calls a DV MCP tool requiring a `program_id` delegates here
 first, so this skill is infrastructure other skills build on rather than
 something a user invokes directly.
 
@@ -31,15 +31,15 @@ Behavior:
 5. Selection does not persist across chats. It is re-resolved at the start of every new one.
 
 On Claude Code only, if `list-my-programs` is unavailable the skill can register
-the bundled `dv-mcp` server automatically. It reads the plugin's bundled
-`.mcp.json`, writes the `dv-mcp` entry into the project's `.mcp.json` or the
+the bundled DV MCP server automatically. It reads the plugin's bundled
+`.mcp.json`, writes the DV MCP server entry into the project's `.mcp.json` or the
 user's `~/.claude.json`, merging with rather than overwriting any existing
 `mcpServers` entries, then asks the user to restart. Cursor never
 auto-configures, because `.cursor-plugin/plugin.json` already declares the
 server; if the tool is missing there, the fix is reloading the window or
 reinstalling the plugin. The full config spec is in
-[`references/dv-mcp-setup.md`](references/dv-mcp-setup.md).
+[`references/mcp-setup.md`](references/mcp-setup.md).
 
 Tools used: `list-my-programs`.
 
-See the [plugin reference](../../README.md) for setup, the `dv-mcp` tool reference and data handling.
+See the [plugin reference](../../README.md) for setup, the DV MCP tool reference and data handling.

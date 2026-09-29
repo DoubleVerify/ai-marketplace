@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "dv-mcp": {
+    "dv": {
       "type": "http",
       "url": "https://mcp.doubleverify.com/mcp",
       "oauth": {
@@ -9,7 +9,7 @@
       "headers": {
         "X-DV-Plugin": "doubleverify-agent-plugin",
         "X-DV-Client": "claude",
-        "X-DV-Plugin-Version": "0.1.21"
+        "X-DV-Plugin-Version": "0.1.22"
       }
     }
   }
