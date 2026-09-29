@@ -4,7 +4,7 @@ Ask natural-language questions about your DV campaign data — performance, bran
 suitability, fraud, viewability, and more.
 
 This is the required entry point for any DV data question. It must be loaded
-before any `dv-mcp` tool is called. It covers campaign performance, brand
+before any DV MCP tool is called. It covers campaign performance, brand
 suitability, fraud/SIVT, viewability, geo-compliance, blocking/filtering and
 DV Authentic Attention metrics.
 
@@ -42,4 +42,4 @@ Reference files under [`references/`](references/):
 
 Tools used: `list-my-programs`, `get-datapoint-catalog`, `run-query`.
 
-See the [plugin reference](../../README.md) for setup, the `dv-mcp` tool reference and data handling.
+See the [plugin reference](../../README.md) for setup, the DV MCP tool reference and data handling.

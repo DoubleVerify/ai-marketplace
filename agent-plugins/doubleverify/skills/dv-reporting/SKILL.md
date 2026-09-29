@@ -1,8 +1,8 @@
 ---
 name: dv-reporting
 description: >
-  MUST be loaded before calling any dv-mcp tool. This is the required entry
-  point for all DV Pinnacle data access on this surface. If dv-mcp tools are
+  MUST be loaded before calling any DV MCP tool. This is the required entry
+  point for all DV Pinnacle data access on this surface. If DV MCP tools are
   present in the session, load this skill first — before attempting any tool
   call. Handles all DV data questions including: listing or selecting programs,
   checking available datamarts, campaign performance, top campaigns, brand
@@ -12,16 +12,16 @@ description: >
   Roblox). Triggers on: "list my programs", "my programs", "datamarts",
   "top campaigns", "campaign performance", "brand suitability", "fraud rate",
   "viewability", "block rate", "DV data", "Pinnacle", report generation,
-  metric lookups, any mention of dv-mcp tools.
+  metric lookups, any mention of DV MCP tools.
 ---
 
 # DV Reporting
 
-Conversational access to DV Pinnacle measurement data via the `dv-mcp` MCP server.
+Conversational access to DV Pinnacle measurement data via the DV MCP server.
 
 ## Prerequisites
 
-The `dv-mcp` MCP server must be configured and reachable. Verify by calling `list-my-programs`. If the tool is unavailable or the call fails:
+The DV MCP server must be configured and reachable. Verify by calling `list-my-programs`. If the tool is unavailable or the call fails:
 
 1. Tell the user: "The DV MCP server is not reachable. Please ensure it is configured and that you have authenticated."
 2. **Do not suggest upgrading Claude Code, installing packages, or any other workaround.** The issue is the MCP server connection.
@@ -277,7 +277,7 @@ Beyond flagging issues, surface the following as options the user may want to co
 
 | Error | Action |
 |-------|--------|
-| MCP tools unavailable | User must ensure dv-mcp is configured and authenticated |
+| MCP tools unavailable | User must ensure DV MCP is configured and authenticated |
 | Query fails with incompatible fields | Check co-requisite rules in the glossary; remove incompatible combinations |
 | Empty results | Restate the filters and date range; ask whether to broaden (lower threshold, extend date range, remove filters) |
 | Program not found | Re-run `dv-program-context` skill |
